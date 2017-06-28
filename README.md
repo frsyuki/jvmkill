@@ -31,3 +31,17 @@ Run Java with the agent added as a JVM argument:
 
 Alternatively, if modifying the Java command line is not possible, the
 above may be added to the `JAVA_TOOL_OPTIONS` environment variable.
+
+# Docker
+
+Add following lines to Dockerfile to install jvmkill to /usr/local/lib/jvmkill.so:
+
+    ADD https://github.com/frsyuki/jvmkill/raw/master/docker/install_jvmkill.sh install_jvmkill.sh
+    RUN bash install_jvmkill.sh
+
+Note that jvmkill doesn't work if java process runs as PID 1 (because Linux
+kernel doesn't let user processes send KILL signal to PID 1). This is a problem
+with Docker because Docker runs a process as PID 1 by default. You can add
+`--init` option to `docker run` command so that an init process always runs as
+PID 1 and java process runs as a child process.
+
